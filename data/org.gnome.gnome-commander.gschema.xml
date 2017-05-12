@@ -346,13 +346,6 @@
             This option defines if directories will be marked when all items in a file pane should be marked.
         </description>
     </key>
-    <key name="allow-multiple-instances" type="b">
-      <default>false</default>
-      <summary>Allow multiple instances</summary>
-      <description>
-          This option defines if multiple instances are allowed.
-      </description>
-    </key>
     <key name="quick-search-exact-match-begin" type="b">
       <default>true</default>
       <summary>Quick search exact match begin</summary>

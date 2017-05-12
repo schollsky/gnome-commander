@@ -726,7 +726,7 @@ static void destroy (GtkObject *object)
     if (main_win->file_search_dlg)
         gtk_widget_destroy (*main_win->file_search_dlg);
 
-    gtk_main_quit ();
+    gtk_main_quit();
 }
 
 

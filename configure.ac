@@ -41,7 +41,6 @@ GNOME_REQ=2.0.0
 GNOMEUI_REQ=2.4.0
 GNOMEVFS_REQ=2.0.0
 GNOME_KEYRING_REQ=2.22
-UNIQUE_REQ=0.9.3
 PYTHON_REQ=2.5
 EXIV2_REQ=0.14
 TAGLIB_REQ=1.4
@@ -54,7 +53,6 @@ AC_SUBST(GNOME_REQ)
 AC_SUBST(GNOMEUI_REQ)
 AC_SUBST(GNOMEVFS_REQ)
 AC_SUBST(GNOME_KEYRING_REQ)
-AC_SUBST(UNIQUE_REQ)
 AC_SUBST(PYTHON_REQ)
 AC_SUBST(EXIV2_REQ)
 AC_SUBST(TAGLIB_REQ)
@@ -68,6 +66,9 @@ AC_SUBST(GTEST_REQ)
 
 dnl Check for glib
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= ${GLIB_REQ}])
+
+dnl Check for gio
+PKG_CHECK_MODULES([GIO], [gio-2.0 >= ${GLIB_REQ}])
 
 dnl Check for gobject
 PKG_CHECK_MODULES([GOBJECT],[gobject-2.0])
@@ -89,19 +90,6 @@ PKG_CHECK_MODULES([GNOMEVFS], [gnome-vfs-2.0 >= ${GNOMEVFS_REQ}], have_gnomevfs=
 
 dnl Check for gnome-keyring
 PKG_CHECK_MODULES(GNOME_KEYRING, [gnome-keyring-1 >= ${GNOME_KEYRING_REQ}])
-
-dnl Check for libUnique
-AC_ARG_WITH([unique], AS_HELP_STRING([--without-unique], [disable unique support]))
-AS_IF([test "x$with_unique" != "xno"],
-   [
-      PKG_CHECK_MODULES([UNIQUE], [unique-1.0 >= ${UNIQUE_REQ}], have_unique=yes, have_unique=no)
-   ],
-   [test "x$with_unique" = "xno"], [have_unique=no])
-if test "x$have_unique" = "xyes"; then
-   AC_DEFINE(HAVE_UNIQUE, 1, [Define to 1 if you have unique support])
-else
-   AC_MSG_WARN([unique >= ${UNIQUE_REQ} not found, disabling unique support])
-fi
 
 dnl Check for samba support
 AC_ARG_WITH(samba, [AS_HELP_STRING([--without-samba], [disable SAMBA support])])

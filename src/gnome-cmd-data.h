@@ -92,7 +92,6 @@ GcmdSettings *gcmd_settings_new (void);
 #define GCMD_SETTINGS_MAIN_WIN_STATE                  "main-win-state"
 #define GCMD_SETTINGS_SELECT_DIRS                     "select-dirs"
 #define GCMD_SETTINGS_CASE_SENSITIVE                  "case-sensitive"
-#define GCMD_SETTINGS_MULTIPLE_INSTANCES              "allow-multiple-instances"
 #define GCMD_SETTINGS_QUICK_SEARCH_EXACT_MATCH_BEGIN  "quick-search-exact-match-begin"
 #define GCMD_SETTINGS_QUICK_SEARCH_EXACT_MATCH_END    "quick-search-exact-match-end"
 #define GCMD_SETTINGS_DEV_SKIP_MOUNTING               "dev-skip-mounting"
@@ -258,7 +257,6 @@ struct GnomeCmdData
         GnomeCmdQuickSearchShortcut  quick_search;
         gboolean                     quick_search_exact_match_begin;
         gboolean                     quick_search_exact_match_end;
-        gboolean                     allow_multiple_instances;
         gboolean                     save_dirs_on_exit;
         gboolean                     save_tabs_on_exit;
         gboolean                     save_dir_history_on_exit;
@@ -316,7 +314,6 @@ struct GnomeCmdData
                    quick_search(GNOME_CMD_QUICK_SEARCH_CTRL_ALT),
                    quick_search_exact_match_begin(TRUE),
                    quick_search_exact_match_end(FALSE),
-                   allow_multiple_instances(FALSE),
                    save_dirs_on_exit(FALSE),
                    save_tabs_on_exit(TRUE),
                    save_dir_history_on_exit(TRUE),

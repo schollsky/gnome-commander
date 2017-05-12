@@ -24,12 +24,13 @@ extern "C"
     void gnome_authentication_manager_init ();
 }
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include <glib/gi18n.h>
 #include <locale.h>
-#ifdef HAVE_UNIQUE
-#include <unique/unique.h>
-#endif
+
 #include <libgnomeui/gnome-ui-init.h>
 
 #include "gnome-cmd-includes.h"
@@ -72,40 +73,10 @@ static const GOptionEntry options [] =
 };
 
 
-#ifdef HAVE_UNIQUE
-static UniqueResponse on_message_received (UniqueApp *app, UniqueCommand cmd, UniqueMessageData *msg, guint t, gpointer  user_data)
-{
-#if defined (__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-#endif
-    switch (cmd)
-    {
-        case UNIQUE_ACTIVATE:
-            gtk_window_set_screen (*main_win, unique_message_data_get_screen (msg));
-            gtk_window_present_with_time (*main_win, t);
-            gdk_beep ();
-            break;
-
-        default:
-            break;
-    }
-#if defined (__GNUC__)
-#pragma GCC diagnostic pop
-#endif
-
-    return UNIQUE_RESPONSE_OK;
-}
-#endif
-
-
 int main (int argc, char *argv[])
 {
     GnomeProgram *program;
     GOptionContext *option_context;
-#ifdef HAVE_UNIQUE
-    UniqueApp *app;
-#endif
 
     main_win = NULL;
 
@@ -147,67 +118,47 @@ int main (int argc, char *argv[])
     gnome_cmd_data.migrate_all_data_to_gsettings();
     gnome_cmd_data.load();
 
-#ifdef HAVE_UNIQUE
-    app = unique_app_new ("org.gnome.GnomeCommander", NULL);
-#endif
+    if (start_dir_left)
+        gnome_cmd_data.tabs[LEFT].push_back(make_pair(string(start_dir_left),make_triple(GnomeCmdFileList::COLUMN_NAME,GTK_SORT_ASCENDING,FALSE)));
 
-#ifdef HAVE_UNIQUE
-    if (!gnome_cmd_data.options.allow_multiple_instances && unique_app_is_running (app))
-        unique_app_send_message (app, UNIQUE_ACTIVATE, NULL);
-    else
-    {
-#endif
-        if (start_dir_left)
-            gnome_cmd_data.tabs[LEFT].push_back(make_pair(string(start_dir_left),make_triple(GnomeCmdFileList::COLUMN_NAME,GTK_SORT_ASCENDING,FALSE)));
+    if (start_dir_right)
+        gnome_cmd_data.tabs[RIGHT].push_back(make_pair(string(start_dir_right),make_triple(GnomeCmdFileList::COLUMN_NAME,GTK_SORT_ASCENDING,FALSE)));
 
-        if (start_dir_right)
-            gnome_cmd_data.tabs[RIGHT].push_back(make_pair(string(start_dir_right),make_triple(GnomeCmdFileList::COLUMN_NAME,GTK_SORT_ASCENDING,FALSE)));
+    gcmd_user_actions.set_defaults();
+    ls_colors_init ();
+    gnome_cmd_data.load_more();
 
-        gcmd_user_actions.set_defaults();
-        ls_colors_init ();
-        gnome_cmd_data.load_more();
+    gnome_authentication_manager_init ();
 
-        gnome_authentication_manager_init ();
+    gnome_cmd_style_create (gnome_cmd_data.options);
 
-        gnome_cmd_style_create (gnome_cmd_data.options);
+    main_win = new GnomeCmdMainWin;
+    main_win_widget = *main_win;
 
-        main_win = new GnomeCmdMainWin;
-        main_win_widget = *main_win;
-#ifdef HAVE_UNIQUE
-        unique_app_watch_window (app, *main_win);
-        g_signal_connect (app, "message-received", G_CALLBACK (on_message_received), NULL);
-#endif
+    gtk_widget_show (*main_win);
+    gcmd_owner.load_async();
 
-        gtk_widget_show (*main_win);
-        gcmd_owner.load_async();
-
-        gcmd_tags_init();
-        plugin_manager_init ();
+    gcmd_tags_init();
+    plugin_manager_init ();
 #ifdef HAVE_PYTHON
-        python_plugin_manager_init ();
+    python_plugin_manager_init ();
 #endif
 
-        gtk_main ();
+    gtk_main();
 
 #ifdef HAVE_PYTHON
-        python_plugin_manager_shutdown ();
+    python_plugin_manager_shutdown ();
 #endif
-        plugin_manager_shutdown ();
-        gcmd_tags_shutdown ();
-        gcmd_user_actions.shutdown();
-        gnome_cmd_data.save();
-        IMAGE_free ();
+    plugin_manager_shutdown ();
+    gcmd_tags_shutdown ();
+    gcmd_user_actions.shutdown();
+    gnome_cmd_data.save();
+    IMAGE_free ();
 
-        remove_temp_download_dir ();
-#ifdef HAVE_UNIQUE
-    }
-#endif
+    remove_temp_download_dir ();
 
     gnome_vfs_shutdown ();
 
-#ifdef HAVE_UNIQUE
-    g_object_unref (app);
-#endif
     g_object_unref (program);
     g_free (debug_flags);
 

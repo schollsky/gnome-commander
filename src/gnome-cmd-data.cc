@@ -734,14 +734,6 @@ static void on_always_download_changed()
     gnome_cmd_data.options.honor_expect_uris = always_download;
 }
 
-static void on_multiple_instances_changed()
-{
-    gboolean allow_multiple_instances;
-
-    allow_multiple_instances = g_settings_get_boolean (gnome_cmd_data.options.gcmd_settings->general, GCMD_SETTINGS_MULTIPLE_INSTANCES);
-    gnome_cmd_data.options.allow_multiple_instances = allow_multiple_instances;
-}
-
 static void on_use_internal_viewer_changed()
 {
     gboolean use_internal_viewer;
@@ -1182,11 +1174,6 @@ static void gcmd_connect_gsettings_signals(GcmdSettings *gs)
                       G_CALLBACK (on_always_download_changed),
                       NULL);
 
-    g_signal_connect (gs->general,
-                      "changed::allow-multiple-instances",
-                      G_CALLBACK (on_multiple_instances_changed),
-                      NULL);
-
     g_signal_connect (gs->programs,
                       "changed::use-internal-viewer",
                       G_CALLBACK (on_use_internal_viewer_changed),
@@ -1296,7 +1283,6 @@ GnomeCmdData::Options::Options(const Options &cfg)
     quick_search = cfg.quick_search;
     quick_search_exact_match_begin = cfg.quick_search_exact_match_begin;
     quick_search_exact_match_end = cfg.quick_search_exact_match_end;
-    allow_multiple_instances = cfg.allow_multiple_instances;
     save_dirs_on_exit = cfg.save_dirs_on_exit;
     save_tabs_on_exit = cfg.save_tabs_on_exit;
     save_dir_history_on_exit = cfg.save_dir_history_on_exit;
@@ -1357,7 +1343,6 @@ GnomeCmdData::Options &GnomeCmdData::Options::operator = (const Options &cfg)
         quick_search = cfg.quick_search;
         quick_search_exact_match_begin = cfg.quick_search_exact_match_begin;
         quick_search_exact_match_end = cfg.quick_search_exact_match_end;
-        allow_multiple_instances = cfg.allow_multiple_instances;
         save_dirs_on_exit = cfg.save_dirs_on_exit;
         save_tabs_on_exit = cfg.save_tabs_on_exit;
         save_dir_history_on_exit = cfg.save_dir_history_on_exit;
@@ -2929,9 +2914,6 @@ void GnomeCmdData::migrate_all_data_to_gsettings()
         //honor_expect_uris
         migrate_data_int_value_into_gsettings(gnome_cmd_data_get_bool ("/programs/honor_expect_uris", FALSE) ? 1 : 0,
                                               options.gcmd_settings->programs, GCMD_SETTINGS_DONT_DOWNLOAD);
-        //allow_multiple_instances
-        migrate_data_int_value_into_gsettings(gnome_cmd_data_get_bool ("/programs/allow_multiple_instances", FALSE) ? 1 : 0,
-                                              options.gcmd_settings->general, GCMD_SETTINGS_MULTIPLE_INSTANCES);
         //use_internal_viewer
         migrate_data_int_value_into_gsettings(gnome_cmd_data_get_bool ("/programs/use_internal_viewer", TRUE) ? 1 : 0,
                                               options.gcmd_settings->programs, GCMD_SETTINGS_USE_INTERNAL_VIEWER);
@@ -3513,7 +3495,6 @@ void GnomeCmdData::load()
     mainmenu_visibility = g_settings_get_boolean (options.gcmd_settings->general, GCMD_SETTINGS_MAINMENU_VISIBILITY);
 
     options.honor_expect_uris = g_settings_get_boolean (options.gcmd_settings->programs, GCMD_SETTINGS_DONT_DOWNLOAD);
-    options.allow_multiple_instances = g_settings_get_boolean (options.gcmd_settings->general, GCMD_SETTINGS_MULTIPLE_INSTANCES);
     options.use_internal_viewer = g_settings_get_boolean (options.gcmd_settings->programs, GCMD_SETTINGS_USE_INTERNAL_VIEWER);
     options.quick_search = (GnomeCmdQuickSearchShortcut) g_settings_get_enum (options.gcmd_settings->general, GCMD_SETTINGS_QUICK_SEARCH_SHORTCUT);
     options.quick_search_exact_match_begin = g_settings_get_boolean (options.gcmd_settings->general, GCMD_SETTINGS_QUICK_SEARCH_EXACT_MATCH_BEGIN);
@@ -4116,7 +4097,6 @@ void GnomeCmdData::save()
     set_gsettings_when_changed      (options.gcmd_settings->general, GCMD_SETTINGS_CMDLINE_HISTORY_LENGTH, &(cmdline_history_length));
     set_gsettings_when_changed      (options.gcmd_settings->general, GCMD_SETTINGS_HORIZONTAL_ORIENTATION, &(horizontal_orientation));
     set_gsettings_when_changed      (options.gcmd_settings->general, GCMD_SETTINGS_GUI_UPDATE_RATE, &(gui_update_rate));
-    set_gsettings_when_changed      (options.gcmd_settings->general, GCMD_SETTINGS_MULTIPLE_INSTANCES, &(options.allow_multiple_instances));
     set_gsettings_enum_when_changed (options.gcmd_settings->general, GCMD_SETTINGS_QUICK_SEARCH_SHORTCUT, options.quick_search);
 
     set_gsettings_when_changed      (options.gcmd_settings->programs, GCMD_SETTINGS_DONT_DOWNLOAD, &(options.honor_expect_uris));
