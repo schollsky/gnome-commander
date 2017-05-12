@@ -10,7 +10,6 @@ AM_CPPFLAGS = \
 	$(GNOMEUI_CFLAGS) \
 	$(GNOMEVFS_CFLAGS) \
 	$(GNOME_KEYRING_CFLAGS) \
-	$(UNIQUE_CFLAGS) \
 	$(PYTHON_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\"\
 	-DPLUGIN_DIR=\""$(libdir)/$(PACKAGE)/plugins"\" \
