@@ -56,23 +56,23 @@ using namespace std;
 struct _ViewerFileOps
 {
     // File handling (based on 'Midnight Commander'-'s view.c)
-    char *filename;        // Name of the file
-    unsigned char *data;    // Memory area for the file to be viewed
-    int file;        // File descriptor (for mmap and munmap)
-    int mmapping;        // Did we use mmap on the file?
+    char *filename;           // Name of the file
+    unsigned char *data;      // Memory area for the file to be viewed
+    int file;                 // File descriptor (for mmap and munmap)
+    int mmapping;             // Did we use mmap on the file?
 
     // Growing buffers information
-    int growing_buffer;    // Use the growing buffers?
-    char **block_ptr;    // Pointer to the block pointers
-    int   blocks;        // The number of blocks in *block_ptr
-    struct stat s;        // stat for file
+    int growing_buffer;       // Use the growing buffers?
+    char **block_ptr;         // Pointer to the block pointers
+    int   blocks;             // The number of blocks in *block_ptr
+    struct stat s;            // stat for file
 
-    offset_type last;           // Last byte shown
-    offset_type last_byte;      // Last byte of file
+    offset_type last;         // Last byte shown
+    offset_type last_byte;    // Last byte of file
     offset_type first;        // First byte in file
-    offset_type bottom_first;    // First byte shown when very last page is displayed
-                    // For the case of WINCH we should reset it to -1
-    offset_type bytes_read;     // How much of file is read
+    offset_type bottom_first; // First byte shown when very last page is displayed
+                              // For the case of WINCH we should reset it to -1
+    offset_type bytes_read;   // How much of file is read
 };
 
 
@@ -103,8 +103,8 @@ inline const char *unix_error_string (int error_num)
 
 static int gv_file_internal_open(ViewerFileOps *ops, int fd)
 {
-    g_return_val_if_fail (ops!=NULL, -1);
-    g_return_val_if_fail (fd>2, -1);
+    g_return_val_if_fail (ops != NULL, -1);
+    g_return_val_if_fail (fd > 2, -1);
 
     const gchar *error;
     int cntlflags;
@@ -169,8 +169,8 @@ int gv_file_open(ViewerFileOps *ops, const gchar *_file)
 {
     g_free (ops->filename);
 
-    g_return_val_if_fail (_file!=NULL, -1);
-    g_return_val_if_fail (_file[0]!=0, -1);
+    g_return_val_if_fail (_file != NULL, -1);
+    g_return_val_if_fail (_file[0] != 0, -1);
 
     ops->filename = g_strdup (_file);
 
@@ -221,7 +221,7 @@ const char *gv_file_init_growing_view (ViewerFileOps *ops, const char *filename)
 
 
 /*
-    returns  NULL on success
+    returns NULL on success
 */
 const char *gv_file_load(ViewerFileOps *ops, int fd)
 {
