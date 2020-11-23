@@ -1,0 +1,38 @@
+version: 1
+
+AppDir:
+  path: /home/stefan/gcmd
+
+  app_info:
+    id: org.gnome.Comannder
+    name: gnome-commander
+    icon: gnome-commander
+    version: 1.10.3
+    exec: usr/bin/gnome-commander
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb [arch=amd64] http://mx.archive.ubuntu.com/ubuntu/ bionic main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3B4FE6ACC0B21F32'
+
+    include:
+      - gnome-commander
+      - librsvg2-common
+
+  files:
+    exclude:
+      - usr/share/man
+      - usr/share/doc/*/README.*
+      - usr/share/doc/*/changelog.*
+      - usr/share/doc/*/NEWS.*
+      - usr/share/doc/*/TODO.*
+
+  test:
+    ubuntu:
+      image: appimagecrafters/tests-env:ubuntu-bionic
+      command: "./AppRun"
+      use_host_x: True
+
+AppImage:
+  arch: amd64
